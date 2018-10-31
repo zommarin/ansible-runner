@@ -1,10 +1,11 @@
 
-
+IMAGE=zommarin/ansible-runner
+VERSION=latest
 
 .PHONY: build
 build:
-	docker build . -t zommarin/ansible-runner
+	docker build . -t $(IMAGE):$(VERSION)
 
 .PHONY: push
-push:
-	docker push zommarin/ansible-runner
+push: build
+	docker push $(IMAGE):$(VERSION)

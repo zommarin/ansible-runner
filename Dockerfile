@@ -5,26 +5,28 @@
 #
 FROM alpine:latest
 
-RUN builddeps=' \
-		python-dev \
-		py2-pip \
-		musl-dev \
-		openssl-dev \
-		libffi-dev \
-		gcc \
-		' \
-	&& apk --no-cache add \
+ENV BUILD_DEPS python-dev py2-pip musl-dev openssl-dev libffi-dev gcc
+
+RUN apk --no-cache add \
 	ca-certificates \
 	python \
 	py-paramiko \
 	py-yaml \
 	py-jinja2 \
 	py-httplib2 \
-	$builddeps \
-	&& pip install --upgrade pip \
-	&& pip install \
+	$BUILD_DEPS
+
+RUN pip install --upgrade pip
+
+RUN pip install \
 		ansible \
 		six \
-	&& apk del --purge $builddeps
+		boto3 \
+		botocore
 
-ENTRYPOINT [ "ansible" ]
+RUN apk del --purge $BUILD_DEPS
+RUN mkdir /work
+
+WORKDIR /work
+
+CMD ansible --help
